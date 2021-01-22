@@ -1,0 +1,22 @@
+version: '3'
+services:
+  mintr:
+    image: mrcide/mintr:master
+    restart: unless-stopped
+  mint:
+    depends_on:
+    - mintr
+    image: mrcide/mint:master
+    restart: unless-stopped
+    volumes:
+    - ./mint/src/app/static/scripts/test.properties:/etc/mint/config.properties:ro
+  proxy:
+    command: mint:8080 ${SERVER}.dide.ic.ac.uk 80 443
+    image: reside/proxy-nginx:master
+    ports:
+    - 80:80
+    - 443:443
+    restart: unless-stopped
+    volumes:
+    - ./ssl/certificate.pem:/run/proxy/certificate.pem:ro
+    - ./ssl/key.pem:/run/proxy/key.pem:ro
