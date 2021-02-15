@@ -13,8 +13,12 @@ To set up and run (can safely be repeated e.g. in order to update SSL cert):
 
 To update to latest mint/mintr and restart:
 
-1. `./mint-deploy pull`
+- `./mint-deploy pull`
 
 To shut down:
 
-1. `./mint-deploy down`
+- `./mint-deploy down`
+
+If you need to deploy a branch other than `master` then you can do the following, assuming the branch exists for both `mint` and `mintr`:
+
+- `echo BRANCH=mrc-2186 >>.env` (substitute the relevant branch name)
