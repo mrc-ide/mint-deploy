@@ -19,6 +19,11 @@ To shut down:
 
 - `./mint-deploy down`
 
-If you need to deploy a branch other than `master` then you can do the following, assuming the branch exists for both `mint` and `mintr`:
+If you need to deploy a branch other than `main` for the app and/or API you can specify via a `.env` file:
 
-- `echo BRANCH=mrc-2186 >>.env` (substitute the relevant branch name)
+```shell
+cat >.env <<EOF
+API_BRANCH=mrc-2186
+APP_BRANCH=mrc-2186
+EOF
+```

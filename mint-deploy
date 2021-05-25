@@ -5,7 +5,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 source .env
 export COMPOSE_PROJECT_NAME="${SERVER}"
-export BRANCH="${BRANCH:-master}"
+export API_BRANCH="${API_BRANCH:-main}"
+export APP_BRANCH="${APP_BRANCH:-main}"
 
 case "${1-}" in
         up)
@@ -14,9 +15,11 @@ case "${1-}" in
             vault read -field=key "secret/${SERVER}/ssl" >ssl/key.pem && chmod 600 ssl/key.pem
 
             [ -d "mint" ] || git clone https://github.com/mrc-ide/mint.git
+            git -C mint checkout "${APP_BRANCH}"
             docker-compose up -d
             ;;
         pull)
+            git -C mint checkout "${APP_BRANCH}"
             git -C mint pull
             docker-compose pull
             docker-compose up -d
