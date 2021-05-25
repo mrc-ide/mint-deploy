@@ -19,6 +19,7 @@ case "${1-}" in
             docker-compose up -d
             ;;
         pull)
+            git -C mint fetch
             git -C mint checkout "${APP_BRANCH}"
             git -C mint pull
             docker-compose pull
