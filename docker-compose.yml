@@ -23,7 +23,6 @@ services:
       - mint-tls:/run/proxy
   acme-buddy:
     image: ghcr.io/reside-ic/acme-buddy:main
-    container_name: mint-acme-buddy
     ports:
       - 2112:2112
     restart: unless-stopped
