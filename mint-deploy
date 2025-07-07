@@ -24,17 +24,17 @@ EOF
 
             [ -d "mint" ] || git clone https://github.com/mrc-ide/mint.git
             git -C mint checkout "${APP_BRANCH}"
-            docker-compose up -d
+            docker compose up -d
             ;;
         pull)
             git -C mint fetch
             git -C mint checkout "${APP_BRANCH}"
 	    git -C mint reset --hard "origin/${APP_BRANCH}"
-            docker-compose pull
-            docker-compose up -d
+            docker compose pull
+            docker compose up -d
             ;;
         down)
-            docker-compose down
+            docker compose down
             ;;
         *)
             echo $"Usage: $0 {up|pull|down}"
