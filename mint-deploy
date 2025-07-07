@@ -14,9 +14,6 @@ case "${1-}" in
             VAULT_TOKEN=$(vault login -method=github -token-only)
             export VAULT_TOKEN
 
-            vault read -field=certificate "secret/${SERVER}/ssl" >ssl/certificate.pem
-            vault read -field=key "secret/${SERVER}/ssl" >ssl/key.pem && chmod 600 ssl/key.pem
-
             hdb_username=$(vault read -field=username "secret/certbot-hdb/credentials")
             hdb_password=$(vault read -field=password "secret/certbot-hdb/credentials")
 
