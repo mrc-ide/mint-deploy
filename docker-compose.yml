@@ -20,5 +20,9 @@ services:
     - 443:443
     restart: unless-stopped
     volumes:
-    - ./ssl/certificate.pem:/run/proxy/certificate.pem:ro
-    - ./ssl/key.pem:/run/proxy/key.pem:ro
+    - mint-tls:/run/proxy
+
+volumes:
+  mint-tls:
+    external: true
+
