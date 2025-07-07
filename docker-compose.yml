@@ -30,6 +30,8 @@ services:
     volumes:
       - mint-tls:/tls
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - ACME_BUDDY_STAGING: ${ACME_BUDDY_STAGING}
     env_file:
       - hdb-credentials
     command: >
