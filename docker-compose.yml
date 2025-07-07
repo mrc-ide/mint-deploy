@@ -31,7 +31,7 @@ services:
       - mint-tls:/tls
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - ACME_BUDDY_STAGING: ${ACME_BUDDY_STAGING}
+      - ACME_BUDDY_STAGING
     env_file:
       - hdb-credentials
     command: >
@@ -41,7 +41,7 @@ services:
       --certificate-path /tls/certificate.pem
       --key-path /tls/key.pem
       --account-path /tls/account.json
-      --reload-container proxy-nginx
+      --reload-container ${COMPOSE_PROJECT_NAME}_proxy_1
 
 volumes:
   mint-tls:
