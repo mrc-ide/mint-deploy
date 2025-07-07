@@ -22,27 +22,6 @@ HDB_ACME_USERNAME=$hdb_username
 HDB_ACME_PASSWORD=$hdb_password
 EOF
 
-            docker volume create mint-tls
-            ACME_BUDDY_IMAGE=ghcr.io/reside-ic/acme-buddy:main
-            echo "*** Starting acme-buddy container"
-            docker run -d \
-                --pull always \
-                --name mint-acme-buddy \
-                --publish 2112:2112 \
-                --volume mint-tls:/tls \
-                --volume /var/run/docker.sock:/var/run/docker.sock \
-                --env ACME_BUDDY_STAGING \
-                --env-file hdb-credentials \
-                "$ACME_BUDDY_IMAGE" \
-                --domain "$SERVER.dide.ic.ac.uk" \
-                --email reside@imperial.ac.uk \
-                --dns-provider hdb \
-                --certificate-path /tls/certificate.pem \
-                --key-path /tls/key.pem \
-                --account-path /tls/account.json \
-                --reload-container proxy-nginx
-
-
             [ -d "mint" ] || git clone https://github.com/mrc-ide/mint.git
             git -C mint checkout "${APP_BRANCH}"
             docker-compose up -d
@@ -55,8 +34,6 @@ EOF
             docker-compose up -d
             ;;
         down)
-            docker stop mint-acme-buddy
-            docker rm mint-acme-buddy
             docker-compose down
             ;;
         *)

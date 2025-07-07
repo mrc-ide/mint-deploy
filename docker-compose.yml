@@ -5,24 +5,41 @@ services:
     restart: unless-stopped
   mint:
     depends_on:
-    - mintr
+      - mintr
     image: mrcide/mint:${APP_BRANCH}
     restart: unless-stopped
     volumes:
-    - ./mint/src/app/static/scripts/test.properties:/etc/mint/config.properties:ro
+      - ./mint/src/app/static/scripts/test.properties:/etc/mint/config.properties:ro
   proxy:
     command: app:8080 ${SERVER}.dide.ic.ac.uk 80 443
     image: reside/proxy-nginx:master
     links:
-    - mint:app
+      - mint:app
     ports:
-    - 80:80
-    - 443:443
+      - 80:80
+      - 443:443
     restart: unless-stopped
     volumes:
-    - mint-tls:/run/proxy
+      - mint-tls:/run/proxy
+  acme-buddy:
+    image: ghcr.io/reside-ic/acme-buddy:main
+    container_name: mint-acme-buddy
+    ports:
+      - 2112:2112
+    restart: unless-stopped
+    volumes:
+      - mint-tls:/tls
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - hdb-credentials
+    command: >
+      --domain ${SERVER}.dide.ic.ac.uk
+      --email reside@imperial.ac.uk
+      --dns-provider hdb
+      --certificate-path /tls/certificate.pem
+      --key-path /tls/key.pem
+      --account-path /tls/account.json
+      --reload-container proxy-nginx
 
 volumes:
   mint-tls:
-    external: true
-
