@@ -7,7 +7,7 @@ Pre-requisites:
 
 To set up and run (can safely be repeated e.g. in order to update SSL cert): 
 
-1. `echo DOMAIN=mint-dev.dide.ic.ac.uk >.env` (or `mint-dev` for staging server - this matches path in Vault and filter in Kibana)
+1. `echo DOMAIN=mint-dev.dide.ic.ac.uk >.env` (use `mint-dev.dide.ic.ac.uk` for staging, or `mint.dide.ic.ac.uk` for production; this matches path in Vault and filter in Kibana)
 1. `./mint-deploy up`
 
 To update to latest mint/mintr and restart:
