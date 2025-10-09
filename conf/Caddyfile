@@ -1,0 +1,4 @@
+mint-dev.dide.ic.ac.uk {
+    tls /tls/certificate.pem /tls/key.pem # mounted into volume from acme-buddy
+    reverse_proxy mint-frontend:3000 
+}
