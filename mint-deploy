@@ -1,42 +1,36 @@
 #!/usr/bin/env bash
 set -eEuo pipefail
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+setup_vault_credentials() {
+    export VAULT_ADDR=https://vault.dide.ic.ac.uk:8200
+    VAULT_TOKEN=$(vault login -method=github -token-only)
+    export VAULT_TOKEN
 
-source .env
-export COMPOSE_PROJECT_NAME="${SERVER}"
-export API_BRANCH="${API_BRANCH:-main}"
-export APP_BRANCH="${APP_BRANCH:-main}"
+    local hdb_username hdb_password
+    hdb_username=$(vault read -field=username "secret/certbot-hdb/credentials")
+    hdb_password=$(vault read -field=password "secret/certbot-hdb/credentials")
 
-case "${1-}" in
-        up)
-            export VAULT_ADDR=https://vault.dide.ic.ac.uk:8200
-            VAULT_TOKEN=$(vault login -method=github -token-only)
-            export VAULT_TOKEN
-
-            hdb_username=$(vault read -field=username "secret/certbot-hdb/credentials")
-            hdb_password=$(vault read -field=password "secret/certbot-hdb/credentials")
-
-            cat >hdb-credentials <<EOF
+    cat > hdb-credentials <<EOF
 HDB_ACME_USERNAME=$hdb_username
 HDB_ACME_PASSWORD=$hdb_password
 EOF
+}
 
-            [ -d "mint" ] || git clone https://github.com/mrc-ide/mint.git
-            git -C mint checkout "${APP_BRANCH}"
-            docker compose up -d
-            ;;
-        pull)
-            git -C mint fetch
-            git -C mint checkout "${APP_BRANCH}"
-	    git -C mint reset --hard "origin/${APP_BRANCH}"
-            docker compose pull
-            docker compose up -d
-            ;;
-        down)
-            docker compose down
-            ;;
-        *)
-            echo $"Usage: $0 {up|pull|down}"
-            exit 1
+# Main logic
+case "${1:-}" in
+    up)
+        setup_vault_credentials
+        docker compose up -d
+        ;;
+    pull)
+        docker compose pull
+        docker compose up -d
+        ;;
+    down)
+        docker compose down
+        ;;
+    *)
+        echo "Usage: $0 {up|pull|down}"
+        exit 1
+        ;;
 esac

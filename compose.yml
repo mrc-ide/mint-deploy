@@ -1,0 +1,82 @@
+services:
+  mint-redis:
+    image: redis:8.0
+    container_name: mint-redis
+    ports:
+      - 6379:6379
+    volumes:
+      - mint-data:/data
+    restart: unless-stopped
+
+  mintr:
+    image: ghcr.io/mrc-ide/mintr:${API_REF:-main}
+    container_name: mintr
+    restart: unless-stopped
+    healthcheck:
+      test: curl -f http://localhost:8888/ || exit 1
+      start_period: 1m
+      interval: 1m
+      timeout: 30s
+      retries: 5
+    ports:
+      - 8888:8888
+
+  mint-frontend:
+    image: ghcr.io/mrc-ide/mint-frontend:${FRONTEND_REF:-main}
+    container_name: mint-frontend
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      - REDIS_URL=redis://mint-redis:6379
+      - PUBLIC_MINTR_URL=http://mintr:8888
+      - ORIGIN=https://${DOMAIN}
+    depends_on:
+      mint-redis:
+        condition: service_started
+      mintr:
+        condition: service_healthy
+        restart: true
+
+  acme-buddy:
+    image: ghcr.io/reside-ic/acme-buddy:main
+    container_name: acme-buddy
+    ports:
+      - 2112:2112
+    restart: unless-stopped
+    volumes:
+      - mint-tls:/tls
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - ACME_BUDDY_STAGING
+    env_file:
+      - hdb-credentials
+    command: >
+      --domain ${DOMAIN}
+      --email reside@imperial.ac.uk
+      --dns-provider hdb
+      --certificate-path /tls/certificate.pem
+      --key-path /tls/key.pem
+      --account-path /tls/account.json
+      --reload-container proxy
+  
+  proxy:
+    image: nginx:1.29
+    container_name: proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - DOMAIN
+    volumes:
+      - ./templates:/etc/nginx/templates
+      - mint-tls:/tls
+    depends_on:
+      - acme-buddy
+      - mint-frontend
+
+volumes:
+  mint-data:
+  mint-tls:
+
