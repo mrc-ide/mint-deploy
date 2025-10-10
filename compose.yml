@@ -25,7 +25,6 @@ services:
 
   mint-frontend:
     image: ghcr.io/mrc-ide/mint-frontend:${FRONTEND_REF:-main}
-    pull_policy: always
     ports:
       - 3000:3000
     env_file:
@@ -68,7 +67,7 @@ services:
   caddy:
     image: caddy:2.10
     container_name: caddy
-    restart: unless-stopped
+    restart: always
     ports:
       - 80:80
       - 443:443
