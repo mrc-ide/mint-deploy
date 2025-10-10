@@ -11,8 +11,6 @@ services:
   mintr:
     image: ghcr.io/mrc-ide/mintr:${API_REF:-main}
     container_name: mintr
-    env_file:
-      - .env
     restart: unless-stopped
     healthcheck:
       test: curl -f http://localhost:8888/ || exit 1
@@ -29,8 +27,6 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
-    env_file:
-      - .env
     environment:
       - REDIS_URL=redis://mint-redis:6379
       - PUBLIC_MINTR_URL=http://mintr:8888
@@ -71,8 +67,8 @@ services:
     ports:
       - 80:80
       - 443:443
-    env_file:
-      - .env
+    environment:
+      - DOMAIN=${DOMAIN}
     volumes:
       - ./templates:/etc/nginx/templates
       - mint-tls:/tls
