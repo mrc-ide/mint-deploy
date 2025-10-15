@@ -31,6 +31,7 @@ services:
       - REDIS_URL=redis://mint-redis:6379
       - PUBLIC_MINTR_URL=http://mintr:8888
       - ORIGIN=https://${DOMAIN}
+      - IPINFO_TOKEN=${IPINFO_TOKEN}
     depends_on:
       mint-redis:
         condition: service_started
