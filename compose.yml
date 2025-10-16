@@ -32,6 +32,7 @@ services:
       - PUBLIC_MINTR_URL=http://mintr:8888
       - ORIGIN=https://${DOMAIN}
       - IPINFO_TOKEN=${IPINFO_TOKEN}
+      - ADDRESS_HEADER=X-Forwarded-For
     depends_on:
       mint-redis:
         condition: service_started
