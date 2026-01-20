@@ -1,7 +1,14 @@
 # Redirect HTTP to HTTPS
 server {
     listen 80;
-    return 301 https://$host$request_uri;
+
+    location /basic_status {
+      stub_status;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
 }
 
 # HTTPS server
@@ -31,10 +38,6 @@ server {
 
     location /metrics/api {
         proxy_pass http://mint-api:8000/metrics;
-    }
-
-    location /basic_status {
-      stub_status;
     }
 }
 
