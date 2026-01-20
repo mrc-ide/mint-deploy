@@ -20,3 +20,21 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+
+# Metrics server
+server {
+    listen 9000 ssl;
+    server_name ${DOMAIN};
+
+    ssl_certificate /tls/certificate.pem;
+    ssl_certificate_key /tls/key.pem;
+
+    location /metrics/api {
+        proxy_pass http://mint-api:8000/metrics;
+    }
+
+    location /basic_status {
+      stub_status;
+    }
+}
+
