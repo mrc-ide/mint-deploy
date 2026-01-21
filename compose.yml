@@ -79,7 +79,7 @@ services:
     ports:
       - 9113:9113
     command:
-      - --nginx.scrape-uri=http://proxy:80/basic_status
+      - --nginx.scrape-uri=http://proxy/basic_status
     depends_on:
       - proxy
 
