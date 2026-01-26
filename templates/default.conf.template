@@ -1,7 +1,18 @@
 # Redirect HTTP to HTTPS
 server {
     listen 80;
-    return 301 https://$host$request_uri;
+
+    location /basic_status {
+      allow 172.16.0.0/12;
+      allow 192.168.0.0/16;
+      deny all;
+
+      stub_status;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
 }
 
 # HTTPS server
@@ -20,3 +31,17 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+
+# Metrics server
+server {
+    listen 9000 ssl;
+    server_name ${DOMAIN};
+
+    ssl_certificate /tls/certificate.pem;
+    ssl_certificate_key /tls/key.pem;
+
+    location /metrics/api {
+        proxy_pass http://mint-api:8000/metrics;
+    }
+}
+
