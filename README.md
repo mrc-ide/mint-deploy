@@ -5,13 +5,13 @@ Pre-requisites:
 - Docker and Docker Compose
 - Vault
 
-To set up and run (can safely be repeated e.g. in order to update SSL cert): 
+To set up and run (can safely be repeated e.g. in order to update SSL cert):
 
 1. `echo DOMAIN=mint-dev.dide.ic.ac.uk >.env` (use `mint-dev.dide.ic.ac.uk` for staging, or `mint.dide.ic.ac.uk` for production)
 1. Add `IPINFO_TOKEN`: Token for IP info service (retrieve with: `vault read -field=token secret/reside/ipinfo`)
 1. `./mint-deploy up`
 
-To update to latest mint/mintr and restart:
+To update to latest mint and restart:
 
 - `./mint-deploy pull`
 
