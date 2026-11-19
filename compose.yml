@@ -56,7 +56,7 @@ services:
       --reload-container proxy
 
   proxy:
-    image: nginx:1.29
+    image: nginx:stable
     container_name: proxy
     restart: always
     ports:
